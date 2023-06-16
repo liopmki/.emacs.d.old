@@ -18,11 +18,20 @@
 ;; (toggle-frame-maximized) ;; 启动最大化
 (tool-bar-mode -1) ;; 关闭工具栏
 (scroll-bar-mode -1) ;; 关闭滑动条
-(setq cursor-type '(bar . 3)) ;; 设置光标样式
+(setq-default cursor-type '(bar . 3)) ;; 设置光标样式
+(show-paren-mode t) ;; 显示括号匹配
+(setq make-backup-files nil) ;; 关闭备份文件
+;; recent file
+(require 'recentf)
+(recentf-mode 1)
+(setq recentf-max-menu-item 10)
+;; recent file end
+(delete-selection-mode 1) ;; 优化删除，当选中一些内容时，输入会直接更新这些内容
+()
 ;; 优化鼠标滚轮
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil)))
 (setq mouse-wheel-progressive-speed nil)
-
+(global-hl-line-mode 1) ;; 高亮当前行
 ;; [[ appearence ]]
 ;; [ font ]
 (add-to-list 'default-frame-alist '(font . "LXGW WenKai Mono-14" ))
@@ -77,12 +86,48 @@
 ;; consult 搜索增强
 (package-install 'consult)
 (global-set-key (kbd "C-s") 'consult-line)
+(global-set-key (kbd "C-x b") 'consult-buffer)
+
+;; embark-consult 批量搜索替换
+(package-install 'embark-consult)
+(package-install 'wgrep)  ;; wgrep
+(setq wgrep-auto-save-buffer t)
+(eval-after-load 'consult
+  '(eval-after-load 'embark
+     '(progn
+	(require 'embark-consult)
+	(add-hook
+	 'embark-collect-mode-hook
+	 #'consult-preview-at-point-mode))))
+(defun embark-export-write ()
+  (interactive)
+  (require 'embark)
+  (require 'wgrep)
+  (pcase-let ((`(,type . ,candidates)
+	       (run-hook-with-args-until-success 'embark-candidate-collectors)))
+    (pcase type
+      ('consult-grep (let ((embark-after-export-hook #'wgrep-change-to-wgrep-mode))
+		       (embark-export)))
+      ('file (let ((embark-after-export-hook #'wdired-change-to-wdired-mode))
+	       (embark-export)))
+      ('consult-location (let ((embark-after-export-hook #'occur-edit-mode))
+			   (embark-export)))
+      (x (user-error "Embark category %S doesn't support writable export" x)))))
+(define-key minibuffer-local-map (kbd "C-c C-e") 'embark-export-write)
 
 ;; Valign Org-mode 表格对齐
 (package-install 'valign)
 (add-hook 'org-mode-hook #'valign-mode)
 
+;; [ 手动安装插件 ]
+;; awesome-tab
+(add-to-list 'load-path (expand-file-name "/home/yang/.emacs.d/elisp/awesome-tab"))
+(require 'awesome-tab)
+(awesome-tab-mode t)
 
+;; [[ Theme ]]
+(package-install 'nord-theme)
+(load-theme 'nord t)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -90,7 +135,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(company consult valign vertico orderless marginalia embark)))
+   '(nord-theme wgrep embark-consult company consult valign vertico orderless marginalia embark)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
