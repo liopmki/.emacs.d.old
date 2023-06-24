@@ -7,4 +7,9 @@
   (package-refresh-contents))
 ;; [ end init package ]
 
+;; Install use-package
+(package-install 'use-package)
+
 (provide 'init-packages)
+
+;; end init-packages

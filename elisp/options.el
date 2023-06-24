@@ -10,6 +10,10 @@
 (setq-default cursor-type '(bar . 3)) ;; 设置光标样式
 (show-paren-mode t) ;; 显示括号匹配
 (setq make-backup-files nil) ;; 关闭备份文件
+(global-auto-revert-mode 1) ;; 自动加载外部修改过的文件
+(setq auto-save-default nil) ;; 关闭自动保存的文件
+(setq ring-bell-function 'ignore) ;; 关闭Emacs的警告音
+(fset 'yes-or-no-p 'y-or-n-p) ;; 将(yes-or-no-p)修改成(y-or-n-p)
 ;; recent file
 (require 'recentf)
 (recentf-mode 1)

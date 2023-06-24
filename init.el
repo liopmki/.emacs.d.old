@@ -2,7 +2,6 @@
 ;; init.el
 
 (add-to-list 'load-path "~/.emacs.d/elisp/")
-(add-to-list 'load-path "~/.emacs.d/elisp/plugins")
 (add-to-list 'load-path "~/.emacs.d/elisp/plugins-manually/")
 (require 'init-packages)  ;; [ 初始化包管理器 ]
 (require 'options) ;; [ Options ]
@@ -15,4 +14,5 @@
 (setq custom-file (expand-file-name "~/.emacs.d/elisp/custom.el"))
 (load custom-file 'no-error 'no-message)
 
+;; init.el end
 

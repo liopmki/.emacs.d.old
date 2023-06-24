@@ -4,10 +4,6 @@
   (find-file "~/.emacs.d/init.el"))
 (global-set-key (kbd "<f2>") 'open-init-file)
 
-;; company
-(define-key company-active-map (kbd "C-n") 'company-select-next)
-(define-key company-active-map (kbd "C-p") 'company-select-previous)
-
 ;; embark
 (global-set-key (kbd "C-'") 'embark-act) ; 触发 action
 
