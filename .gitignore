@@ -1,3 +1,4 @@
 elpa/
 eln-cache/
-recentf
+./auto-save-list/
+./recentf
